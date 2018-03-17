@@ -1,0 +1,24 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.Holo.Light.NoActionBar">
+        <item name="android:textCursorDrawable">@null</item>
+    </style>
+
+    <style name="UserCredentialsEditText" parent="Base.Widget.AppCompat.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:drawablePadding">12dp</item>
+        <item name="android:padding">@dimen/padding_login_screen_all</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="android:textSize">@dimen/editTextTextSize</item>
+        <item name="android:gravity">bottom</item>
+    </style>
+
+    <style name="HorizontalLineSeparator">
+        <item name="android:layout_height">@dimen/height_all_line_separator</item>
+        <item name="android:background">@color/colorLine</item>
+    </style>
+</resources>

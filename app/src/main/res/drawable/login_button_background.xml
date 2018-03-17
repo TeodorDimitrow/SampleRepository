@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <stroke
+        android:width="2dp"
+        android:color="@color/gradient_dark_center" />
+    <corners android:radius="10dp" />
+    <padding
+        android:bottom="@dimen/padding_login_button_background"
+        android:left="@dimen/padding_login_button_background"
+        android:right="@dimen/padding_login_button_background"
+        android:top="@dimen/padding_login_button_background" />
+
+    <solid android:color="@color/color_login_button" />
+</shape>

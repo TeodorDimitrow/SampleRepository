@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SampleApplication</string>
+    <string name="button_log_in">Log in</string>
+    <string name="login_remember">Remember me</string>
+    <string name="user_password">Password</string>
+    <string name="user_email">Email</string>
+</resources>
