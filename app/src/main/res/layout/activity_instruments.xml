@@ -42,6 +42,7 @@
         <View style="@style/VerticalLineSeparator" />
 
         <ImageButton
+            android:id="@+id/instruments_logout_button"
             style="@style/InstrumentsTopToolbarImageView"
             android:background="@drawable/ic_sign_out"
             android:padding="15dp" />

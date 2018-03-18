@@ -57,24 +57,45 @@ public class LoginActivity extends Activity {
 	private boolean isPasswordVisible;
 	private boolean isEmailUnderlineRed;
 	private boolean isPasswordUnderlineRed;
+	boolean hasUserLoggedOut;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		baseActivityConfig();
+		checkForLogout();
+		if (!hasUserLoggedOut) {
+			checkForStoredUser();
+		}
+		setListeners();
+	}
+
+	private void baseActivityConfig () {
 		BaseApplication.getBaseComponent().inject(this);
 		ButterKnife.bind(this);
-		checkForStoredUser();
-		setListeners();
+	}
+
+	private void checkForLogout () {
+		Intent intent = getIntent();
+		if (intent.hasExtra(InstrumentsActivity.EXTRA_HAS_LOGGED_OUT)) {
+			hasUserLoggedOut = intent.getBooleanExtra(InstrumentsActivity.EXTRA_HAS_LOGGED_OUT, false);
+		}
 	}
 
 	private void checkForStoredUser () {
 		String email = sharedPreferencesManager.getStoredEmail();
 		String password = sharedPreferencesManager.getStoredPassword();
 		if (!email.isEmpty() && !password.isEmpty()) {
-			emailEditText.setText(email);
-			passwordEditText.setText(password);
+			startInstrumentActivity();
 		}
+	}
+
+	private void startInstrumentActivity () {
+		Intent intent = new Intent(LoginActivity.this, InstrumentsActivity.class);
+		startActivity(intent);
+		overridePendingTransition(R.anim.enter_transition, R.anim.exit_transition);
+		finish();
 	}
 
 	@SuppressLint ("ClickableViewAccessibility")
@@ -97,9 +118,7 @@ public class LoginActivity extends Activity {
 		if (rememberMeCheckBox.isChecked()) {
 			sharedPreferencesManager.saveUserCredentials(email, password);
 		}
-		Intent intent = new Intent(LoginActivity.this, InstrumentsActivity.class);
-		startActivity(intent);
-		finish();
+		startInstrumentActivity();
 	}
 
 	private boolean areCredentialsValid (String email, String password) {
