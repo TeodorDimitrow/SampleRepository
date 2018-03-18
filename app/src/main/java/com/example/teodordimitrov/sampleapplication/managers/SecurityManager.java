@@ -71,12 +71,13 @@ public class SecurityManager {
 	private static final String RSA_MODE = "RSA/ECB/PKCS1Padding";
 	private static final String CIPHER_PROVIDER_NAME_ENCRYPTION_DECRYPTION_RSA = "AndroidOpenSSL";
 	private static final String CIPHER_PROVIDER_NAME_ENCRYPTION_DECRYPTION_AES = "BC";
-	private static final String SHARED_PREFERENCE_NAME = "com.example.teodordimitrov.sampleapplcation.credentials";
-	private static final String ENCRYPTED_KEY_NAME = "encryptedKey";
+
+	private SharedPreferencesManager sharedPreferencesManager;
 
 	private final Context mContext;
 
-	public SecurityManager (Context context) {
+	public SecurityManager (Context context, SharedPreferencesManager sharedPreferencesManager) {
+		this.sharedPreferencesManager = sharedPreferencesManager;
 		mContext = context;
 	}
 
@@ -123,8 +124,7 @@ public class SecurityManager {
 
 	@SuppressLint ("ApplySharedPref")
 	private void removeSavedSharedPreferences () {
-		SharedPreferences pref = mContext.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
-		pref.edit().clear().commit();
+		sharedPreferencesManager.removeEncryptedKey();
 	}
 
 	private void generateKeysForAPILessThanM () throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, CertificateException, UnrecoverableEntryException, NoSuchPaddingException, KeyStoreException, InvalidKeyException, IOException {
@@ -148,25 +148,20 @@ public class SecurityManager {
 
 	@SuppressLint ("ApplySharedPref")
 	private void saveEncryptedKey () throws CertificateException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, UnrecoverableEntryException, IOException {
-		SharedPreferences pref = mContext.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
-		String encryptedKeyBase64encoded = pref.getString(ENCRYPTED_KEY_NAME, null);
+		String encryptedKeyBase64encoded = sharedPreferencesManager.getEncryptedKey();
 		if (encryptedKeyBase64encoded == null) {
 			byte[] key = new byte[16];
 			SecureRandom secureRandom = new SecureRandom();
 			secureRandom.nextBytes(key);
 			byte[] encryptedKey = rsaEncryptKey(key);
 			encryptedKeyBase64encoded = Base64.encodeToString(encryptedKey, Base64.DEFAULT);
-			SharedPreferences.Editor edit = pref.edit();
-			edit.putString(ENCRYPTED_KEY_NAME, encryptedKeyBase64encoded);
-			edit.commit();
+			sharedPreferencesManager.saveEncryptedKey(encryptedKeyBase64encoded);
 		}
 
 	}
 
 	private Key getSecretKeyAPILessThanM () throws CertificateException, NoSuchPaddingException, InvalidKeyException, NoSuchAlgorithmException, KeyStoreException, NoSuchProviderException, UnrecoverableEntryException, IOException {
-		SharedPreferences pref = mContext.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
-		String encryptedKeyBase64Encoded = pref.getString(ENCRYPTED_KEY_NAME, null);
-		// need to check null, omitted here
+		String encryptedKeyBase64Encoded = sharedPreferencesManager.getEncryptedKey();
 		byte[] encryptedKey = Base64.decode(encryptedKeyBase64Encoded, Base64.DEFAULT);
 		byte[] key = rsaDecryptKey(encryptedKey);
 		return new SecretKeySpec(key, "AES");
@@ -205,7 +200,7 @@ public class SecurityManager {
 			cipher = Cipher.getInstance(AES_MODE_LESS_THAN_M, CIPHER_PROVIDER_NAME_ENCRYPTION_DECRYPTION_AES);
 			try {
 				cipher.init(Cipher.ENCRYPT_MODE, getSecretKeyAPILessThanM());
-			} catch (InvalidKeyException | IOException e) {
+			} catch (NullPointerException | InvalidKeyException | IOException e) {
 				// Since the keys can become bad (perhaps because of lock screen change)
 				// drop keys in this case.
 				removeKeys();
@@ -236,7 +231,7 @@ public class SecurityManager {
 				c = Cipher.getInstance(AES_MODE_LESS_THAN_M, CIPHER_PROVIDER_NAME_ENCRYPTION_DECRYPTION_AES);
 				c.init(Cipher.DECRYPT_MODE, getSecretKeyAPILessThanM());
 			}
-		} catch (InvalidKeyException | IOException e) {
+		} catch (NullPointerException | InvalidKeyException | IOException e) {
 			// Since the keys can become bad (perhaps because of lock screen change)
 			// drop keys in this case.
 			removeKeys();

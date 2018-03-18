@@ -3,9 +3,16 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FFFF</color>
-    <color name="colorLine">#FFFF</color>
-    <color name="gradient_dark_center">#16191d</color>
-    <color name="gradient_dark_end">#000000</color>
-    <color name="gradient_dark_start">#525c66</color>
-    <color name="color_login_button">#eeeeee</color>
+
+    <color name="login_gradient_dark_end">#000000</color>
+    <color name="login_gradient_dark_center">#16191d</color>
+    <color name="login_gradient_dark_start">#525c66</color>
+
+    <color name="instruments_gradient_dark_end">#616161</color>
+    <color name="instruments_gradient_dark_center">#5e5e5e</color>
+    <color name="instruments_gradient_dark_start">#5e5e5e</color>
+
+    <color name="light_dark">#FF36373D</color>
+    <color name="white_shade">#eeeeee</color>
+    <color name="dark">#121518</color>
 </resources>

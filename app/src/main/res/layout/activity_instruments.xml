@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_dark"
+    tools:context="com.example.teodordimitrov.sampleapplication.activities.InstrumentsActivity">
+
+    <View
+        style="@style/HorizontalLineSeparator"
+        android:layout_above="@id/instruments_top_toolbar_layout" />
+
+    <LinearLayout
+        android:id="@+id/instruments_top_toolbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/custom_layout"
+        android:padding="2dp">
+
+        <ImageView
+            style="@style/InstrumentsTopToolbarImageView"
+            android:background="@mipmap/main_logo" />
+
+        <View style="@style/VerticalLineSeparator" />
+
+        <ImageView
+            style="@style/InstrumentsTopToolbarImageView"
+            android:layout_gravity="end"
+            android:background="@drawable/ic_chart" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/small_margin"
+            android:layout_weight="3"
+            android:gravity="left|center"
+            android:text="Instruments"
+            android:textColor="@color/white_shade"
+            android:textSize="@dimen/large_text" />
+
+        <View style="@style/VerticalLineSeparator" />
+
+        <ImageButton
+            style="@style/InstrumentsTopToolbarImageView"
+            android:background="@drawable/ic_sign_out"
+            android:padding="15dp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/bottom_of_top_toolbar_layout"
+        style="@style/HorizontalLineSeparator"
+        android:layout_below="@id/instruments_top_toolbar_layout" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/instruments_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/top_of_bottom_toolbar_layout"
+        android:layout_below="@+id/bottom_of_top_toolbar_layout" />
+
+    <View
+        android:id="@+id/top_of_bottom_toolbar_layout"
+        style="@style/HorizontalLineSeparator"
+        android:layout_above="@id/instruments_bottom_toolbar_layout" />
+
+    <!--The styles of the views are needed for the particular UI placements.-->
+    <LinearLayout
+        android:id="@+id/instruments_bottom_toolbar_layout"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/dark"
+        android:gravity="center"
+        android:padding="2dp"
+        android:weightSum="5">
+
+        <ImageButton
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#0000"
+            android:clickable="false"
+            android:padding="5dp"
+            android:src="@drawable/ic_action_name" />
+
+        <TextView
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#0000"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="left|center"
+            android:text="@string/add_instrument"
+            android:textColor="@color/white_shade"
+            android:textSize="@dimen/large_text" />
+    </LinearLayout>
+
+    <View
+        style="@style/HorizontalLineSeparator"
+        android:layout_below="@id/instruments_bottom_toolbar_layout"
+        android:layout_marginBottom="1dp" />
+</RelativeLayout>

@@ -36,5 +36,4 @@ public class BaseModule {
 	Gson providesGson () {
 		return new GsonBuilder().create();
 	}
-
 }

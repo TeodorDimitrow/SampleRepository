@@ -18,7 +18,20 @@
     </style>
 
     <style name="HorizontalLineSeparator">
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/height_all_line_separator</item>
-        <item name="android:background">@color/colorLine</item>
+        <item name="android:background">@color/white_shade</item>
+    </style>
+
+    <style name="VerticalLineSeparator">
+        <item name="android:layout_width">@dimen/width_all_line_separator</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/white_shade</item>
+    </style>
+
+    <style name="InstrumentsTopToolbarImageView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
     </style>
 </resources>

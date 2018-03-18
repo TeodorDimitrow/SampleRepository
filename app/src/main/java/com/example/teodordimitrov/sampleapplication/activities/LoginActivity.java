@@ -1,6 +1,9 @@
 package com.example.teodordimitrov.sampleapplication.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,13 +13,19 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.teodordimitrov.sampleapplication.R;
 import com.example.teodordimitrov.sampleapplication.application.BaseApplication;
+import com.example.teodordimitrov.sampleapplication.managers.SharedPreferencesManager;
 import com.example.teodordimitrov.sampleapplication.util.StringUtils;
+import com.example.teodordimitrov.sampleapplication.util.ValidationUtils;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * LoginActivity representing the login screen.
@@ -36,7 +45,18 @@ public class LoginActivity extends Activity {
 	@BindView (R.id.login_check_box_remember_me)
 	protected CheckBox rememberMeCheckBox;
 
+	@BindView (R.id.login_email_underline)
+	protected View emailUnderlineView;
+
+	@BindView (R.id.login_password_underline)
+	protected View passwordUnderlineView;
+
+	@Inject
+	protected SharedPreferencesManager sharedPreferencesManager;
+
 	private boolean isPasswordVisible;
+	private boolean isEmailUnderlineRed;
+	private boolean isPasswordUnderlineRed;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -44,15 +64,58 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 		BaseApplication.getBaseComponent().inject(this);
 		ButterKnife.bind(this);
+		checkForStoredUser();
 		setListeners();
 	}
 
+	private void checkForStoredUser () {
+		String email = sharedPreferencesManager.getStoredEmail();
+		String password = sharedPreferencesManager.getStoredPassword();
+		if (!email.isEmpty() && !password.isEmpty()) {
+			emailEditText.setText(email);
+			passwordEditText.setText(password);
+		}
+	}
+
+	@SuppressLint ("ClickableViewAccessibility")
 	private void setListeners () {
 		emailEditText.addTextChangedListener(emailTextChangeListener);
 		emailEditText.setOnTouchListener(emailTouchListener);
 		passwordEditText.addTextChangedListener(passwordTextChangeListener);
 		passwordEditText.setOnTouchListener(passwordTouchListener);
 		rememberMeCheckBox.setOnCheckedChangeListener(checkBoxOnCheckListener);
+	}
+
+	@OnClick (R.id.login_button)
+	public void performLogin (View view) {
+		String email = emailEditText.getText().toString();
+		String password = passwordEditText.getText().toString();
+
+		if (!areCredentialsValid(email, password)) {
+			return;
+		}
+		if (rememberMeCheckBox.isChecked()) {
+			sharedPreferencesManager.saveUserCredentials(email, password);
+		}
+		Intent intent = new Intent(LoginActivity.this, InstrumentsActivity.class);
+		startActivity(intent);
+		finish();
+	}
+
+	private boolean areCredentialsValid (String email, String password) {
+		if (!ValidationUtils.isEmailValid(email)) {
+			emailEditText.requestFocus();
+			emailUnderlineView.setBackgroundColor(Color.RED);
+			isEmailUnderlineRed = true;
+			return false;
+		}
+		if (!ValidationUtils.isPasswordValid(password)) {
+			Toast.makeText(this, getString(R.string.error_invalid_password), Toast.LENGTH_SHORT).show();
+			passwordUnderlineView.setBackgroundColor(Color.RED);
+			return false;
+		}
+
+		return true;
 	}
 
 	//TODO Smooth at tested devices. Check android profiler for more performance info.
@@ -64,10 +127,16 @@ public class LoginActivity extends Activity {
 
 		@Override
 		public void onTextChanged (CharSequence s, int start, int before, int count) {
-			if (s.length() == 1) {
+			String input = s.toString();
+
+			if (isEmailUnderlineRed) {
+				emailUnderlineView.setBackgroundColor(Color.WHITE);
+				isEmailUnderlineRed = false;
+			}
+			if (input.length() == 1) {
 				emailEditText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_email, 0, R.drawable.ic_clear, 0);
 			}
-			if (s.length() == 0) {
+			if (input.isEmpty()) {
 				emailEditText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_email, 0, 0, 0);
 			}
 		}
@@ -86,12 +155,17 @@ public class LoginActivity extends Activity {
 
 		@Override
 		public void onTextChanged (CharSequence s, int start, int before, int count) {
-			if (s.length() == 1) {
+			String input = s.toString();
+			if (isPasswordUnderlineRed) {
+				passwordUnderlineView.setBackgroundColor(Color.WHITE);
+				isPasswordUnderlineRed = false;
+			}
+			if (input.length() == 1) {
 				if (passwordEditText.getCompoundDrawables()[TEXT_VIEW_DRAWABLE_RIGHT_POSITION] == null) {
 					passwordEditText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_lock, 0, R.drawable.ic_visible, 0);
 				}
 			}
-			if (s.length() == 0) {
+			if (input.isEmpty()) {
 				passwordEditText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_lock, 0, 0, 0);
 			}
 		}
@@ -106,13 +180,17 @@ public class LoginActivity extends Activity {
 		@Override
 		public boolean onTouch (View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_UP) {
+				v.performClick();
 				if (emailEditText.getCompoundDrawables()[TEXT_VIEW_DRAWABLE_RIGHT_POSITION] != null) {
+					passwordEditText.clearFocus();
 					if (event.getRawX() >= (emailEditText.getRight() - emailEditText.getCompoundDrawables()[TEXT_VIEW_DRAWABLE_RIGHT_POSITION].getBounds().width())) {
 						emailEditText.setText(StringUtils.EMPTY);
-
-						return true;
+						emailEditText.performClick();
+						return false;
 					}
 				}
+			} else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				emailEditText.performClick();
 			}
 			return false;
 		}
@@ -122,13 +200,14 @@ public class LoginActivity extends Activity {
 	private View.OnTouchListener passwordTouchListener = new View.OnTouchListener() {
 		@Override
 		public boolean onTouch (View v, MotionEvent event) {
-
 			if (event.getAction() == MotionEvent.ACTION_UP) {
+				v.performClick();
 				if (passwordEditText.getCompoundDrawables()[TEXT_VIEW_DRAWABLE_RIGHT_POSITION] != null) {
-					if (event.getRawX() >= (passwordEditText.getRight() - passwordEditText.getCompoundDrawables()[TEXT_VIEW_DRAWABLE_RIGHT_POSITION].getBounds().width())) {
+					if (event.getRawX() >=
+							(passwordEditText.getRight() - passwordEditText.getCompoundDrawables()[TEXT_VIEW_DRAWABLE_RIGHT_POSITION]
+									.getBounds().width())) {
 
-						int selectionStart = passwordEditText.getSelectionStart();
-						int selectionEnd = passwordEditText.getSelectionEnd();
+						emailEditText.clearFocus();
 						if (isPasswordVisible) {
 							passwordEditText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_lock, 0, R.drawable.ic_visible, 0);
 							passwordEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
@@ -138,9 +217,8 @@ public class LoginActivity extends Activity {
 							passwordEditText.setTransformationMethod(null);
 							isPasswordVisible = true;
 						}
-						passwordEditText.setSelection(selectionStart, selectionEnd);
 
-						return true;
+						return false;
 					}
 				}
 			}

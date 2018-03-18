@@ -61,8 +61,8 @@
                     android:inputType="textEmailAddress" />
 
                 <View
-                    style="@style/HorizontalLineSeparator"
-                    android:layout_width="match_parent" />
+                    android:id="@+id/login_email_underline"
+                    style="@style/HorizontalLineSeparator" />
 
                 <EditText
                     android:id="@+id/login_edit_text_password"
@@ -72,8 +72,8 @@
                     android:inputType="textPassword" />
 
                 <View
-                    style="@style/HorizontalLineSeparator"
-                    android:layout_width="match_parent" />
+                    android:id="@+id/login_password_underline"
+                    style="@style/HorizontalLineSeparator" />
 
                 <CheckBox
                     android:id="@+id/login_check_box_remember_me"
