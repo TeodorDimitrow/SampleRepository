@@ -1,6 +1,5 @@
 package com.example.teodordimitrov.sampleapplication.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -37,7 +36,7 @@ public class InstrumentsAdapter extends RecyclerView.Adapter<InstrumentsAdapter.
 	private List<Instrument> instrumentsList;
 	private boolean isInstrumentPickerAdapter;
 
-	public InstrumentsAdapter (Activity activity, List<Instrument> instrumentsList, boolean isInstrumentPickerAdapter) {
+	public InstrumentsAdapter (List<Instrument> instrumentsList, boolean isInstrumentPickerAdapter) {
 		this.instrumentsList = instrumentsList;
 		this.isInstrumentPickerAdapter = isInstrumentPickerAdapter;
 		if (isInstrumentPickerAdapter) {
@@ -66,14 +65,14 @@ public class InstrumentsAdapter extends RecyclerView.Adapter<InstrumentsAdapter.
 		if (!isInstrumentPickerAdapter) {
 			if (!holder.removeInstrumentButton.isEnabled()) {
 				holder.removeInstrumentButton.setEnabled(true);
-				updatePrices();
 			}
 		}
 
 	}
 
-	private void updatePrices () {
-
+	public void setUpdatePrices (List<Instrument> instrumentsList) {
+		this.instrumentsList = instrumentsList;
+		notifyDataSetChanged();
 	}
 
 	@Override

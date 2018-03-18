@@ -1,6 +1,8 @@
 package com.example.teodordimitrov.sampleapplication.dagger;
 
+import com.example.teodordimitrov.sampleapplication.activities.InstrumentsActivity;
 import com.example.teodordimitrov.sampleapplication.activities.LoginActivity;
+import com.example.teodordimitrov.sampleapplication.providers.InstrumentPriceProvider;
 
 import javax.inject.Singleton;
 
@@ -16,4 +18,9 @@ import dagger.Component;
 public interface BaseComponent {
 
 	void inject (LoginActivity loginActivity);
+
+	void inject (InstrumentsActivity instrumentsActivity);
+
+	void inject (InstrumentPriceProvider instrumentPriceProvider);
+
 }

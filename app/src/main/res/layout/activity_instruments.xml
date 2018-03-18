@@ -13,7 +13,7 @@
     <LinearLayout
         android:id="@+id/instruments_top_toolbar_layout"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="65dp"
         android:layout_alignParentTop="true"
         android:background="@drawable/custom_layout"
         android:padding="2dp">
@@ -38,7 +38,7 @@
             android:gravity="left|center"
             android:text="Instruments"
             android:textColor="@color/white_shade"
-            android:textSize="@dimen/large_text" />
+            android:textSize="@dimen/semi_large_text" />
 
         <View style="@style/VerticalLineSeparator" />
 
@@ -60,7 +60,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/top_of_bottom_toolbar_layout"
-        android:layout_below="@+id/bottom_of_top_toolbar_layout" />
+        android:layout_below="@+id/bottom_of_top_toolbar_layout"
+        android:layoutAnimation="@anim/layout_animation_fall_down" />
 
     <View
         android:id="@+id/top_of_bottom_toolbar_layout"

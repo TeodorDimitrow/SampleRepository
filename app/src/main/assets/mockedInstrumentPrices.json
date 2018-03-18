@@ -1,0 +1,88 @@
+{
+  "instrumentsList": [
+    {
+      "id": 1,
+      "instrumentName": "Gold",
+      "lowestPrice": 1135.32,
+      "highestPrice": 1142.95
+    },
+    {
+      "id": 2,
+      "instrumentName": "MasterCard",
+      "lowestPrice": 102.1,
+      "highestPrice": 105.8
+    },
+    {
+      "id": 3,
+      "instrumentName": "EUR/USD",
+      "lowestPrice": 1.04321,
+      "highestPrice": 1.04365
+    },
+    {
+      "id": 4,
+      "instrumentName": "$UK100",
+      "lowestPrice": 7014.8,
+      "highestPrice": 7019.6
+    },
+    {
+      "id": 5,
+      "instrumentName": "BMW",
+      "lowestPrice": 88.5,
+      "highestPrice": 92.3
+    },
+    {
+      "id": 6,
+      "instrumentName": "Barclays",
+      "lowestPrice": 2.2181,
+      "highestPrice": 2.2248
+    },
+    {
+      "id": 7,
+      "instrumentName": "Bitcoin",
+      "lowestPrice": 776.03,
+      "highestPrice": 783.93
+    },
+    {
+      "id": 8,
+      "instrumentName": "VW",
+      "lowestPrice": 130.10,
+      "highestPrice": 134.80
+    },
+    {
+      "id": 9,
+      "instrumentName": "$SWISS20",
+      "lowestPrice": 8228.3,
+      "highestPrice": 8237.8
+    },
+    {
+      "id": 10,
+      "instrumentName": "Alcoa",
+      "lowestPrice": 27.365,
+      "highestPrice": 30.584
+    },
+    {
+      "id": 11,
+      "instrumentName": "$NDAQ100",
+      "lowestPrice": 4956.4,
+      "highestPrice": 4961.6
+    },
+    {
+      "id": 12,
+      "instrumentName": "$ITALIAN40",
+      "lowestPrice": 18949,
+      "highestPrice": 18968
+    },
+    {
+      "id": 13,
+      "instrumentName": "AberdeenAM",
+      "lowestPrice": 2.5350,
+      "highestPrice": 2.5620
+    },
+    {
+      "id": 14,
+      "instrumentName": "Apple",
+      "lowestPrice": 116.15,
+      "highestPrice": 120.64
+    }
+  ]
+}
