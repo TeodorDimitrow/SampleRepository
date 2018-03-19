@@ -40,7 +40,7 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 
 	public static final String EXTRA_HAS_LOGGED_OUT = "logout";
 	private static final Integer HANDLER_MSG_CODE_UPDATE_INSTRUMENTS = 1;
-	private static final Integer HANDLER_INSTRUMENTS_REFRESH_RATE = 2000;
+	private static final Integer HANDLER_INSTRUMENTS_REFRESH_RATE = 3250;
 
 	/**
 	 * The recommended usage of a handler. (Lint documentation).
@@ -64,7 +64,7 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 					if (instrumentsActivity.areUserInstrumentsPresented) {
 						instrumentsActivity.updateInstrumentPrices();
 					} else {
-						instrumentsActivity.instrumentProvider.getAllInstruments();
+						instrumentsActivity.instrumentsProvider.getAllInstruments();
 					}
 					sendEmptyMessageDelayed(HANDLER_MSG_CODE_UPDATE_INSTRUMENTS, HANDLER_INSTRUMENTS_REFRESH_RATE);
 				}
@@ -87,11 +87,12 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 	@BindView (R.id.instruments_sign_out_text)
 	protected TextView signOutTextView;
 
-	private InstrumentProvider instrumentProvider;
+	private InstrumentProvider instrumentsProvider;
 	private InstrumentsPickerAdapter instrumentsPickerAdapter;
 	private InstrumentsUserAdapter instrumentsUserAdapter;
 	private WeakReferenceHandler handler;
 	private List<Instrument> userInstrumentsList;
+
 	private boolean areUserInstrumentsPresented;
 
 	@Override
@@ -106,6 +107,7 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 	protected void onStop () {
 		super.onStop();
 		handler.removeCallbacksAndMessages(null);
+		instrumentsProvider.cancelPriceUpdate();
 	}
 
 	@Override
@@ -131,18 +133,20 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 		setPickerAdapter(instrumentsList);
 	}
 
-	public void logout () {
-		Intent intent = new Intent(this, LoginActivity.class);
-		intent.putExtra(EXTRA_HAS_LOGGED_OUT, true);
-		startActivity(intent);
-		overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-		finish();
+	@Override
+	public void onBackPressed () {
+		if (!areUserInstrumentsPresented) {
+			onBack();
+		} else {
+			super.onBackPressed();
+		}
 	}
 
 	@OnClick (R.id.instruments_add_instrument_fab_button)
 	public void showAllInstruments (View view) {
 		handler.sendEmptyMessage(HANDLER_MSG_CODE_UPDATE_INSTRUMENTS);
 		signOutTextView.setText(StringUtils.EMPTY);
+		instrumentsPickerAdapter.clearChecked();
 		showAllInstruments();
 	}
 
@@ -162,6 +166,11 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 			signOutTextView.setText(R.string.sign_out);
 			userInstrumentsList = instrumentsPickerAdapter.getSelectedInstruments();
 			instrumentsPickerAdapter.setUpdateOnlyInstruments(false);
+			if (userInstrumentsList.isEmpty()) {
+				//Last removed callback will not be triggered since they were unchecked from the picker adapter
+				showFabButton();
+				return;
+			}
 			showUserInstruments();
 		} else {
 			signOutTextView.setText(StringUtils.EMPTY);
@@ -173,9 +182,48 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 	@OnClick (R.id.instruments_back_button)
 	public void onCustomBackPressed (View view) {
 		if (!areUserInstrumentsPresented) {
-			signOutTextView.setText(R.string.sign_out);
-			showUserInstruments();
+			onBack();
 		} else {
+			logout();
+		}
+	}
+
+	public void logout () {
+		Intent intent = new Intent(this, LoginActivity.class);
+		intent.putExtra(EXTRA_HAS_LOGGED_OUT, true);
+		startActivity(intent);
+		overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+		finish();
+	}
+
+	public List<Long> getInstrumentsIds () {
+		List<Long> instrumentsIds = new ArrayList<>();
+		for (Instrument instrument : userInstrumentsList) {
+			instrumentsIds.add(instrument.getId());
+		}
+		return instrumentsIds;
+	}
+
+	private void onBack () {
+		signOutTextView.setText(R.string.sign_out);
+		instrumentsPickerAdapter.setUpdateOnlyInstruments(false);
+		if (userInstrumentsList.isEmpty()) {
+			showFabButton();
+		} else {
+			showUserInstruments();
+		}
+	}
+
+	private void onBack (boolean shouldLogout) {
+		if (!areUserInstrumentsPresented) {
+			signOutTextView.setText(R.string.sign_out);
+			instrumentsPickerAdapter.setUpdateOnlyInstruments(false);
+			if (userInstrumentsList.isEmpty()) {
+				showFabButton();
+			} else {
+				showUserInstruments();
+			}
+		} else if (shouldLogout) {
 			logout();
 		}
 	}
@@ -184,11 +232,17 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 		BaseApplication.getBaseComponent().inject(this);
 		ButterKnife.bind(this);
 		userInstrumentsList = new ArrayList<>();
-		instrumentProvider = new InstrumentProvider(this);
+		instrumentsProvider = new InstrumentProvider(this);
 		initRecyclerView();
 		initHandler();
 	}
 
+	/**
+	 * Updates and sets picker adapter to the instruments recycler view.
+	 * TODO if the user opens and closes without adding items and there are none added, the animation will not be displayed because of line 238.
+	 *
+	 * @param instrumentsList
+	 */
 	private void setPickerAdapter (List<Instrument> instrumentsList) {
 		if (instrumentsPickerAdapter.getUpdateOnlyInstruments()) {
 			instrumentsPickerAdapter.setInstruments(instrumentsList);
@@ -212,16 +266,8 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 		AnimationUtils.layoutFallDownAnimation(instrumentsRecyclerView);
 	}
 
-	public List<Long> getInstrumentsIds () {
-		List<Long> instrumentsIds = new ArrayList<>();
-		for (Instrument instrument : userInstrumentsList) {
-			instrumentsIds.add(instrument.getId());
-		}
-		return instrumentsIds;
-	}
-
 	private void showAllInstruments () {
-		instrumentProvider.getAllInstruments();
+		instrumentsProvider.getAllInstruments();
 	}
 
 	private void showFabButton () {
@@ -246,13 +292,13 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 
 	private void initAdapters () {
 		areUserInstrumentsPresented = true;
-		instrumentsPickerAdapter = new InstrumentsPickerAdapter(this, new ArrayList<>());
+		instrumentsPickerAdapter = new InstrumentsPickerAdapter(new ArrayList<>());
 		instrumentsUserAdapter = new InstrumentsUserAdapter(this, userInstrumentsList);
 	}
 
 	private void updateInstrumentPrices () {
 		List<Long> instrumentsIds = getInstrumentsIds();
-		instrumentProvider.updateInstrumentPrices(instrumentsIds);
+		instrumentsProvider.updateInstrumentPrices(instrumentsIds);
 	}
 
 	private void initHandler () {
@@ -260,12 +306,4 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 		handler.sendEmptyMessage(HANDLER_MSG_CODE_UPDATE_INSTRUMENTS);
 	}
 
-	@Override
-	public void onBackPressed () {
-		if (!areUserInstrumentsPresented) {
-			showUserInstruments();
-		} else {
-			super.onBackPressed();
-		}
-	}
 }

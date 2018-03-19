@@ -31,26 +31,29 @@ import javax.inject.Inject;
 
 public class InstrumentProvider {
 
+	private static final String FILE_MOCKED_INSTRUMENTS_NAME = "mockedInstrumentPrices.json";
+	private static final String INSTRUMENT_LOWEST_PRICE = "lowestPrice";
+	private static final String INSTRUMENT_HIGHEST_PRICE = "highestPrice";
+	private static final String INSTRUMENTS_LIST = "instrumentsList";
+
+	//TODO must be in package interfaces.
 	public interface OnInstrumentsUpdatedListenerListener {
 		void onUserInstrumentsUpdated (List<Instrument> instrumentsList);
 
 		void onAllInstrumentsUpdated (List<Instrument> instrumentsList);
 	}
 
-	private static final String FILE_MOCKED_INSTRUMENTS_NAME = "mockedInstrumentPrices.json";
-
-	private static final String INSTRUMENT_LOWEST_PRICE = "lowestPrice";
-	private static final String INSTRUMENT_HIGHEST_PRICE = "highestPrice";
-
 	@Inject
 	protected Gson gson;
 
+	private Random random;
 	private OnInstrumentsUpdatedListenerListener instrumentsListener;
 	private UpdateInstrumentsAsyncTask instrumentsAsyncTask;
 
 	public InstrumentProvider (OnInstrumentsUpdatedListenerListener instrumentsListener) {
 		BaseApplication.getBaseComponent().inject(this);
 		this.instrumentsListener = instrumentsListener;
+		random = new Random();
 	}
 
 	/**
@@ -69,18 +72,25 @@ public class InstrumentProvider {
 	public void getAllInstruments () {
 		UpdateInstrumentsAsyncTask instrumentsAsyncTask = new UpdateInstrumentsAsyncTask(new ArrayList<>(), true);
 		instrumentsAsyncTask.execute();
+		this.instrumentsAsyncTask = instrumentsAsyncTask;
+	}
+
+	public void cancelPriceUpdate () {
+		if (instrumentsAsyncTask != null) {
+			instrumentsAsyncTask.cancel(true);
+		}
 	}
 
 	private InstrumentsResponse getInstruments (JSONObject instrumentsJson, List<Long> userInstrumentsIds, boolean getAllInstruments) {
 		JSONObject updatedInstrumentsJson = new JSONObject();
 		JSONArray updatedInstrumentsJsonArray = new JSONArray();
 		try {
-			JSONArray instrumentsJsonArray = instrumentsJson.getJSONArray("instrumentsList");
+			JSONArray instrumentsJsonArray = instrumentsJson.getJSONArray(INSTRUMENTS_LIST);
 			for (int i = 0; i < instrumentsJsonArray.length(); i++) {
 				JSONObject instrumentJson = instrumentsJsonArray.getJSONObject(i);
 				addNewInstrument(instrumentJson, getAllInstruments, userInstrumentsIds, updatedInstrumentsJsonArray);
 			}
-			updatedInstrumentsJson.put("instrumentsList", updatedInstrumentsJsonArray);
+			updatedInstrumentsJson.put(INSTRUMENTS_LIST, updatedInstrumentsJsonArray);
 		} catch (JSONException e) {
 			Log.e(Constants.TAG, "Exception occurred while parsing mocked json", e);
 		}
@@ -113,6 +123,7 @@ public class InstrumentProvider {
 	 * @throws JSONException
 	 */
 	private void updateInstrumentData (JSONArray updatedInstrumentsJsonArray, JSONObject instrumentJson) throws JSONException {
+
 		float lowestPrice = (float) instrumentJson.getDouble(INSTRUMENT_LOWEST_PRICE);
 		float highestPrice = (float) instrumentJson.getDouble(INSTRUMENT_HIGHEST_PRICE);
 		instrumentJson.remove(INSTRUMENT_LOWEST_PRICE);
@@ -160,14 +171,7 @@ public class InstrumentProvider {
 		return (float) Math.round(randomFloatValue * 100) / 100;
 	}
 
-	public void setInstrumentListener (OnInstrumentsUpdatedListenerListener instrumentListener) {
-		this.instrumentsListener = instrumentListener;
-	}
-
-	public void cancelPriceUpdate () {
-		instrumentsAsyncTask.cancel(true);
-	}
-
+	//TODO make separate class.
 	private class UpdateInstrumentsAsyncTask extends AsyncTask<Void, String, InstrumentsResponse> {
 
 		private List<Long> instrumentsIds;

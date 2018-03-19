@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Instrument bean.
+ * Instrument bean representing a tool for trading.
  *
  * @author teodor.dimitrov on 18.3.2018 г..
  */

@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/recycle_view_row_height"
-    android:layout_margin="5dp">
+    style="@style/RecyclerRowCardView">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/dark"
-        android:weightSum="5">
+    <LinearLayout style="@style/RecycleRowLinearLayout">
 
         <TextView
             android:id="@+id/instrument_user_row_name_text"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:lines="1"
-            android:text="Ripple"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/medium_text" />
+            style="@style/RecycleRowTextView"
+            android:layout_weight="2" />
 
         <View
             android:layout_width="0dp"
@@ -28,15 +16,10 @@
 
         <TextView
             android:id="@+id/instrument_user_row_price_text"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            style="@style/RecycleRowTextView"
             android:layout_margin="15dp"
             android:layout_weight="1.5"
-            android:background="@android:color/holo_red_dark"
-            android:gravity="center"
-            android:text="123.321"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/medium_text" />
+            android:background="@android:color/holo_red_dark" />
 
 
         <ImageButton

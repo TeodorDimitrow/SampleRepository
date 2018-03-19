@@ -21,6 +21,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
+ * Instruments adapter representing the users chosen instruments and their
+ * current <STRONG>accurate</STRONG> prices.
+ *
  * @author teodor.dimitrov on 19.3.2018 г..
  */
 

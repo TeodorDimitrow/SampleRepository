@@ -25,16 +25,14 @@
 
         <View style="@style/VerticalLineSeparator" />
 
-        <ImageView
-            style="@style/InstrumentsTopToolbarImageView"
-            android:layout_gravity="bottom"
-            android:background="@drawable/ic_chart" />
+        <View style="@style/InstrumentsTopToolbarImageView" />
+
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
-            android:layout_margin="@dimen/small_margin"
+            android:layout_margin="@dimen/margin_small"
             android:layout_weight="3"
             android:gravity="center"
             android:text="Instruments"
@@ -50,7 +48,7 @@
 
         <ImageButton
             style="@style/InstrumentsTopToolbarImageView"
-            android:background="@mipmap/main_logo" />
+            android:background="@drawable/ic_top_toolbar_right" />
     </LinearLayout>
 
     <View

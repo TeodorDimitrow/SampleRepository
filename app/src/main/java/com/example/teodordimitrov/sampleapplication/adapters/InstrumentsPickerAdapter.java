@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 
 /**
- * Instrument adapter representing every row in the instruments recycler view.
+ * Instrument adapter representing all available instruments to the user.
  *
  * @author teodor.dimitrov on 18.3.2018 г..
  */
@@ -44,10 +44,8 @@ public class InstrumentsPickerAdapter extends RecyclerView.Adapter<InstrumentsPi
 	private Map<Instrument, Boolean> checkedInstrumentsMap;
 	private List<Instrument> instrumentsList;
 	private boolean updateOnlyInstruments;
-	private Context context;
 
-	public InstrumentsPickerAdapter (Context context, List<Instrument> instrumentsList) {
-		this.context = context;
+	public InstrumentsPickerAdapter (List<Instrument> instrumentsList) {
 		this.instrumentsList = instrumentsList;
 		this.checkedInstrumentsMap = new LinkedHashMap<>();
 		updateOnlyInstruments = false;
@@ -107,6 +105,13 @@ public class InstrumentsPickerAdapter extends RecyclerView.Adapter<InstrumentsPi
 
 	public void setUpdateOnlyInstruments (boolean updateOnlyInstruments) {
 		this.updateOnlyInstruments = updateOnlyInstruments;
+	}
+
+	public void clearChecked () {
+		for (Map.Entry<Instrument, Boolean> entry : checkedInstrumentsMap.entrySet()) {
+			checkedInstrumentsMap.put(entry.getKey(), false);
+		}
+		notifyDataSetChanged();
 	}
 
 	class InstrumentPickerViewHolder extends RecyclerView.ViewHolder {

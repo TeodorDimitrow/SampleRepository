@@ -1,11 +1,12 @@
 <resources>
+    <!--TODO create bulgarian strings file too-->
     <string name="app_name">SampleApplication</string>
     <string name="button_log_in">Log in</string>
     <string name="login_remember">Remember me</string>
     <string name="user_password">Password</string>
     <string name="user_email">Email</string>
     <string name="error_invalid_email">Invalid email.</string>
-    <string name="error_invalid_password">Password must be over 5 characters.</string>
+    <string name="error_invalid_password">Password must be more than 5 characters.</string>
     <string name="instruments_add">Add</string>
     <string name="instruments_select">Select</string>
     <string name="sign_out">Sign out</string>

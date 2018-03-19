@@ -34,4 +34,27 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
     </style>
+
+    <style name="RecyclerRowCardView" parent="CardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/recycle_view_row_height</item>
+        <item name="android:layout_margin">@dimen/margin_small</item>
+    </style>
+
+    <style name="RecycleRowLinearLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:weightSum">5</item>
+        <item name="android:background">@color/dark</item>
+    </style>
+
+    <style name="RecycleRowTextView">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:lines">1</item>
+        <item name="android:textColor">@color/white_shade</item>
+        <item name="android:textSize">@dimen/medium_text</item>
+    </style>
+
 </resources>

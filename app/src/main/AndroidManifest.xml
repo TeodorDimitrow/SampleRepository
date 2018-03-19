@@ -7,7 +7,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_login_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_login_logo"
+        android:roundIcon="@mipmap/ic_launcher_t_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -20,7 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.InstrumentsActivity"></activity>
+        <activity
+            android:name=".activities.InstrumentsActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

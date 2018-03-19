@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--TODO EditText's textSize must be different for different screenSizes.-->
+    <!--TODO Different dimension files for different screen sizes.-->
     <dimen name="editTextTextSize">15sp</dimen>
     <dimen name="height_all_line_separator">1dp</dimen>
     <dimen name="width_all_line_separator">1dp</dimen>
-    <dimen name="padding_login_screen_all">8dp</dimen>
     <dimen name="text_size_login_button">25sp</dimen>
     <dimen name="margin_top_login_button">24dp</dimen>
     <dimen name="margin_top_login_remember_me">15dp</dimen>
+    <dimen name="margin_small">5dp</dimen>
     <dimen name="padding_gradient">7dp</dimen>
+    <dimen name="padding_login_screen_all">8dp</dimen>
     <dimen name="padding_login_button_background">2dp</dimen>
-    <dimen name="small_margin">4dp</dimen>
-    <dimen name="large_text">30sp</dimen>
     <dimen name="recycle_view_row_height">60dp</dimen>
-    <dimen name="medium_text">20sp</dimen>
+    <dimen name="large_text">30sp</dimen>
     <dimen name="semi_large_text">25sp</dimen>
+    <dimen name="medium_text">20sp</dimen>
 </resources>

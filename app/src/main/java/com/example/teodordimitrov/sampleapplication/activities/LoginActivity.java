@@ -110,7 +110,7 @@ public class LoginActivity extends Activity {
 	}
 
 	@OnClick (R.id.login_button)
-	public void performLogin (View view) {
+	public void login (View view) {
 		String email = emailEditText.getText().toString();
 		String password = passwordEditText.getText().toString();
 
@@ -126,6 +126,7 @@ public class LoginActivity extends Activity {
 	private boolean areCredentialsValid (String email, String password) {
 		if (!ValidationUtils.isEmailValid(email)) {
 			emailEditText.requestFocus();
+			Toast.makeText(this, getString(R.string.error_invalid_email), Toast.LENGTH_SHORT).show();
 			emailUnderlineView.setBackgroundColor(Color.RED);
 			isEmailUnderlineRed = true;
 			return false;
