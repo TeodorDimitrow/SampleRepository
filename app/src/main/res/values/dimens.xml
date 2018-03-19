@@ -15,4 +15,6 @@
     <dimen name="large_text">30sp</dimen>
     <dimen name="semi_large_text">25sp</dimen>
     <dimen name="medium_text">20sp</dimen>
+    <dimen name="small_text">15sp</dimen>
+    <dimen name="instruments_top_toolbar">55dp</dimen>
 </resources>

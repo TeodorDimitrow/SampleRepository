@@ -14,7 +14,7 @@
     <LinearLayout
         android:id="@+id/instruments_top_toolbar_layout"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="@dimen/instruments_top_toolbar"
         android:layout_alignParentTop="true"
         android:background="@drawable/custom_layout"
         android:padding="2dp">
@@ -69,7 +69,7 @@
         android:id="@+id/instruments_fab_button_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/instruments_screen_bottom_line"
+        android:layout_alignParentBottom="true"
         android:layout_below="@+id/instruments_top_toolbar_layout"
         android:orientation="vertical"
         android:weightSum="4">
@@ -125,10 +125,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
+            android:lines="1"
             android:gravity="center|left"
             android:text="@string/sign_out"
             android:textColor="@color/white_shade"
-            android:textSize="@dimen/medium_text" />
+            android:textSize="@dimen/small_text" />
 
         <View
             android:layout_width="0dp"
@@ -156,14 +157,7 @@
             android:background="#0000"
             android:clickable="false"
             android:padding="5dp"
-            android:src="@drawable/ic_action_name" />
+            android:src="@drawable/ic_add_instruments" />
 
     </LinearLayout>
-
-    <View
-        android:id="@+id/instruments_screen_bottom_line"
-        style="@style/HorizontalLineSeparator"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="1dp" />
-
 </RelativeLayout>
