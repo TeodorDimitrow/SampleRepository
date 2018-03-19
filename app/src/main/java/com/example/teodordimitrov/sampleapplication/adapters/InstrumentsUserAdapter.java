@@ -82,10 +82,13 @@ public class InstrumentsUserAdapter extends RecyclerView.Adapter<InstrumentsUser
 		if (oldInstrumentPrice != -1f) {
 			if (oldInstrumentPrice > instrument.getCurrentPrice()) {
 				holder.instrumentPriceTextView.setBackgroundColor(Color.RED);
+				holder.instrumentPriceTextView.setTextColor(Color.WHITE);
 			} else if (oldInstrumentPrice < instrument.getCurrentPrice()) {
 				holder.instrumentPriceTextView.setBackgroundColor(Color.GREEN);
+				holder.instrumentPriceTextView.setTextColor(Color.BLACK);
 			} else {
 				holder.instrumentPriceTextView.setBackgroundColor(Color.GRAY);
+				holder.instrumentPriceTextView.setTextColor(Color.WHITE);
 			}
 		}
 		holder.instrumentNameTextView.setText(instrument.getInstrumentName());
