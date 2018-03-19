@@ -15,4 +15,5 @@
     <dimen name="large_text">30sp</dimen>
     <dimen name="semi_large_text">25sp</dimen>
     <dimen name="medium_text">20sp</dimen>
+    <dimen name="toolbar_height">55dp</dimen>
 </resources>

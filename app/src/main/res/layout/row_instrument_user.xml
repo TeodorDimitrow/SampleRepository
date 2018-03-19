@@ -21,7 +21,6 @@
             android:layout_weight="1.5"
             android:background="@android:color/holo_red_dark" />
 
-
         <ImageButton
             android:id="@+id/instrument_user_remove_image_button"
             android:layout_width="0dp"
