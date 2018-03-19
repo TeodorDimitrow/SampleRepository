@@ -6,5 +6,7 @@
     <string name="user_email">Email</string>
     <string name="error_invalid_email">Invalid email.</string>
     <string name="error_invalid_password">Password must be over 5 characters.</string>
-    <string name="add_instrument">Add</string>
+    <string name="instruments_add">Add</string>
+    <string name="instruments_select">Select</string>
+    <string name="sign_out">Sign out</string>
 </resources>

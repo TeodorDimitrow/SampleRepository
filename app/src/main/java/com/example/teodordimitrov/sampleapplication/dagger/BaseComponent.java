@@ -2,7 +2,7 @@ package com.example.teodordimitrov.sampleapplication.dagger;
 
 import com.example.teodordimitrov.sampleapplication.activities.InstrumentsActivity;
 import com.example.teodordimitrov.sampleapplication.activities.LoginActivity;
-import com.example.teodordimitrov.sampleapplication.providers.InstrumentPriceProvider;
+import com.example.teodordimitrov.sampleapplication.providers.InstrumentProvider;
 
 import javax.inject.Singleton;
 
@@ -21,6 +21,6 @@ public interface BaseComponent {
 
 	void inject (InstrumentsActivity instrumentsActivity);
 
-	void inject (InstrumentPriceProvider instrumentPriceProvider);
+	void inject (InstrumentProvider instrumentProvider);
 
 }

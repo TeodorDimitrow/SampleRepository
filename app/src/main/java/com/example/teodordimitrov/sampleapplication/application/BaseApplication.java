@@ -21,11 +21,13 @@ public class BaseApplication extends Application {
 	@Override
 	public void onCreate () {
 		super.onCreate();
+
 		BaseApplication.context = getApplicationContext();
 
 		baseComponent = DaggerBaseComponent.builder()
 				.baseModule(new BaseModule(this))
 				.build();
+
 	}
 
 	public static Context getContext () {

@@ -57,21 +57,18 @@ public class LoginActivity extends Activity {
 	private boolean isPasswordVisible;
 	private boolean isEmailUnderlineRed;
 	private boolean isPasswordUnderlineRed;
-	boolean hasUserLoggedOut;
+	private boolean hasUserLoggedOut;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		baseActivityConfig();
+		baseActivitySetup();
 		checkForLogout();
-		if (!hasUserLoggedOut) {
-			checkForStoredUser();
-		}
 		setListeners();
 	}
 
-	private void baseActivityConfig () {
+	private void baseActivitySetup () {
 		BaseApplication.getBaseComponent().inject(this);
 		ButterKnife.bind(this);
 	}
@@ -80,6 +77,11 @@ public class LoginActivity extends Activity {
 		Intent intent = getIntent();
 		if (intent.hasExtra(InstrumentsActivity.EXTRA_HAS_LOGGED_OUT)) {
 			hasUserLoggedOut = intent.getBooleanExtra(InstrumentsActivity.EXTRA_HAS_LOGGED_OUT, false);
+		}
+		if (!hasUserLoggedOut) {
+			checkForStoredUser();
+		} else {
+			sharedPreferencesManager.clearCredentials();
 		}
 	}
 

@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -28,10 +29,12 @@ import javax.inject.Inject;
  * @author teodor.dimitrov on 18.3.2018 г..
  */
 
-public class InstrumentPriceProvider {
+public class InstrumentProvider {
 
-	public interface OnPricesUpdatedListener {
-		void onPricesUpdated (List<Instrument> instrumentsList);
+	public interface OnInstrumentsUpdatedListenerListener {
+		void onUserInstrumentsUpdated (List<Instrument> instrumentsList);
+
+		void onAllInstrumentsUpdated (List<Instrument> instrumentsList);
 	}
 
 	private static final String FILE_MOCKED_INSTRUMENTS_NAME = "mockedInstrumentPrices.json";
@@ -42,12 +45,12 @@ public class InstrumentPriceProvider {
 	@Inject
 	protected Gson gson;
 
-	private OnPricesUpdatedListener pricesListener;
-	private UpdatePricesAsyncTask pricesAsyncTask;
+	private OnInstrumentsUpdatedListenerListener instrumentsListener;
+	private UpdateInstrumentsAsyncTask instrumentsAsyncTask;
 
-	public InstrumentPriceProvider (OnPricesUpdatedListener pricesListener) {
+	public InstrumentProvider (OnInstrumentsUpdatedListenerListener instrumentsListener) {
 		BaseApplication.getBaseComponent().inject(this);
-		this.pricesListener = pricesListener;
+		this.instrumentsListener = instrumentsListener;
 	}
 
 	/**
@@ -56,32 +59,50 @@ public class InstrumentPriceProvider {
 	 * <STRONG>The file is read every time.<STRONG>
 	 * <STRONG>The purpose of it is to present a more accurate and time taking (not much, but still something) data receiving operation.</STRONG>
 	 *
-	 * @param instrumentsIds List of the ids of the user's instruments.
+	 * @param userInstrumentsIds List of the ids of the user's instruments.
 	 */
-	public void updatePrices (List<Long> instrumentsIds) {
-		UpdatePricesAsyncTask pricesAsyncTask = new UpdatePricesAsyncTask(instrumentsIds);
+	public void updateInstrumentPrices (List<Long> userInstrumentsIds) {
+		UpdateInstrumentsAsyncTask pricesAsyncTask = new UpdateInstrumentsAsyncTask(userInstrumentsIds, false);
 		pricesAsyncTask.execute();
 	}
 
-	private InstrumentsResponse updatePrices (JSONObject instrumentsJson, List<Long> instrumentsIds) {
+	public void getAllInstruments () {
+		UpdateInstrumentsAsyncTask instrumentsAsyncTask = new UpdateInstrumentsAsyncTask(new ArrayList<>(), true);
+		instrumentsAsyncTask.execute();
+	}
+
+	private InstrumentsResponse getInstruments (JSONObject instrumentsJson, List<Long> userInstrumentsIds, boolean getAllInstruments) {
 		JSONObject updatedInstrumentsJson = new JSONObject();
-		JSONArray updateInstrumentsJsonArray = new JSONArray();
+		JSONArray updatedInstrumentsJsonArray = new JSONArray();
 		try {
 			JSONArray instrumentsJsonArray = instrumentsJson.getJSONArray("instrumentsList");
 			for (int i = 0; i < instrumentsJsonArray.length(); i++) {
 				JSONObject instrumentJson = instrumentsJsonArray.getJSONObject(i);
-				long instrumentId = instrumentJson.getLong(Instrument.FIELD_NAME_ID);
-				if (!instrumentsIds.contains(instrumentId)) {
-					continue;
-				}
-				updateInstrumentData(updateInstrumentsJsonArray, instrumentJson);
+				addNewInstrument(instrumentJson, getAllInstruments, userInstrumentsIds, updatedInstrumentsJsonArray);
 			}
-			updatedInstrumentsJson.put("instrumentsList", updateInstrumentsJsonArray);
+			updatedInstrumentsJson.put("instrumentsList", updatedInstrumentsJsonArray);
 		} catch (JSONException e) {
 			Log.e(Constants.TAG, "Exception occurred while parsing mocked json", e);
 		}
 		InstrumentsResponse instrumentsResponse = gson.fromJson(updatedInstrumentsJson.toString(), InstrumentsResponse.class);
 		return instrumentsResponse;
+	}
+
+	/**
+	 * @param getAllInstruments           based on this param, the array will contain all or only the users instruments.
+	 * @param userInstrumentsIds          user's instruments' ids.
+	 * @param updatedInstrumentsJsonArray the array containing all the instruments the user will need.
+	 * @throws JSONException
+	 */
+	private void addNewInstrument (JSONObject instrumentJson, boolean getAllInstruments, List<Long> userInstrumentsIds, JSONArray updatedInstrumentsJsonArray) throws JSONException {
+		long instrumentId = instrumentJson.getLong(Instrument.FIELD_NAME_ID);
+		if (getAllInstruments) {
+			updateInstrumentData(updatedInstrumentsJsonArray, instrumentJson);
+		} else {
+			if (userInstrumentsIds.contains(instrumentId)) {
+				updateInstrumentData(updatedInstrumentsJsonArray, instrumentJson);
+			}
+		}
 	}
 
 	/**
@@ -124,26 +145,37 @@ public class InstrumentPriceProvider {
 		return mockedJson;
 	}
 
+	/**
+	 * Generates random float between the bounds
+	 * and makes it #.## format.
+	 * #.## format is achieved from Math.round(randomFloatValue * 100) / 100
+	 *
+	 * @param lowerBound lower number
+	 * @param upperBound higher number
+	 * @return random number between lower and upper bounds in #.## format.
+	 */
 	private float generateRandomFloat (float lowerBound, float upperBound) {
 		Random random = new Random();
 		float randomFloatValue = lowerBound + random.nextFloat() * (upperBound - lowerBound);
-		return randomFloatValue;
+		return (float) Math.round(randomFloatValue * 100) / 100;
 	}
 
-	public void setPricesListener (OnPricesUpdatedListener pricesListener) {
-		this.pricesListener = pricesListener;
+	public void setInstrumentListener (OnInstrumentsUpdatedListenerListener instrumentListener) {
+		this.instrumentsListener = instrumentListener;
 	}
 
 	public void cancelPriceUpdate () {
-		pricesAsyncTask.cancel(true);
+		instrumentsAsyncTask.cancel(true);
 	}
 
-	private class UpdatePricesAsyncTask extends AsyncTask<Void, String, InstrumentsResponse> {
+	private class UpdateInstrumentsAsyncTask extends AsyncTask<Void, String, InstrumentsResponse> {
 
 		private List<Long> instrumentsIds;
+		private boolean getAllInstruments;
 
-		UpdatePricesAsyncTask (List<Long> instrumentsIds) {
+		UpdateInstrumentsAsyncTask (List<Long> instrumentsIds, boolean getAllInstruments) {
 			this.instrumentsIds = instrumentsIds;
+			this.getAllInstruments = getAllInstruments;
 		}
 
 		@Override
@@ -155,7 +187,7 @@ public class InstrumentPriceProvider {
 			} catch (JSONException e) {
 				Log.e(Constants.TAG, "Exception occurred while parsing mocked json", e);
 			}
-			return updatePrices(instrumentsJson, instrumentsIds);
+			return getInstruments(instrumentsJson, instrumentsIds, getAllInstruments);
 		}
 
 		@Override
@@ -164,7 +196,11 @@ public class InstrumentPriceProvider {
 				return;
 			}
 			if (instrumentsResponse != null && instrumentsResponse.getInstrumentsList() != null) {
-				pricesListener.onPricesUpdated(instrumentsResponse.getInstrumentsList());
+				if (getAllInstruments) {
+					instrumentsListener.onAllInstrumentsUpdated(instrumentsResponse.getInstrumentsList());
+				} else {
+					instrumentsListener.onUserInstrumentsUpdated(instrumentsResponse.getInstrumentsList());
+				}
 			}
 		}
 	}

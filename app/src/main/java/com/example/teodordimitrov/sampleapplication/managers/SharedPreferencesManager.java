@@ -9,26 +9,28 @@ import com.example.teodordimitrov.sampleapplication.util.StringUtils;
 
 /**
  * Shared preferences manager used for abstraction over shared preferences.
+ * The sample application uses shared preferences with encryption to store the email and password.
+ * The sample application also uses shared preferences to save the remembered user favourite instruments.
+ * Not the best practice but there is only one user remembered, and there is great encryption.
+ * <p>
+ * TODO if there is time left migrate to SQLLite or ROOM.
  *
  * @author teodor.dimitrov on 17.3.2018 г..
  */
 
 public class SharedPreferencesManager {
 
-	private static final String SHARED_PREFERENCES_NAME = "com.example.teodordimitrov.sampleapplication.preferences";
 	private static final String SHARED_PREFERENCES_ENCRYPTED = "com.example.teodordimitrov.sampleapplication.encrypted";
 	private static final String KEY_EMAIL = "email";
 	private static final String KEY_PASSWORD = "credential";
 	private static final String KEY_ENCRYPTED_SEQUENCE = "encryptedKey";
 
-	private SharedPreferences sharedPreferences;
 	private SharedPreferences credentialsSharedPreferences;
 
 	private SecurityManager securityManager;
 
 	public SharedPreferencesManager (Context context) {
 		securityManager = new SecurityManager(context, this);
-		sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 		credentialsSharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_ENCRYPTED, Context.MODE_PRIVATE);
 	}
 
@@ -76,4 +78,7 @@ public class SharedPreferencesManager {
 		return decryptedCredential;
 	}
 
+	public void clearCredentials () {
+		credentialsSharedPreferences.edit().clear().apply();
+	}
 }
