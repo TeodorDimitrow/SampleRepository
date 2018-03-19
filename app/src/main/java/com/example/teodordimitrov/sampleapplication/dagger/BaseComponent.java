@@ -1,7 +1,8 @@
 package com.example.teodordimitrov.sampleapplication.dagger;
 
-import com.example.teodordimitrov.sampleapplication.activities.InstrumentsActivity;
 import com.example.teodordimitrov.sampleapplication.activities.LoginActivity;
+import com.example.teodordimitrov.sampleapplication.activities.MainActivity;
+import com.example.teodordimitrov.sampleapplication.fragments.InstrumentsFragment;
 import com.example.teodordimitrov.sampleapplication.providers.InstrumentProvider;
 
 import javax.inject.Singleton;
@@ -17,10 +18,11 @@ import dagger.Component;
 @Component (modules = {BaseModule.class})
 public interface BaseComponent {
 
-	void inject (LoginActivity loginActivity);
-
-	void inject (InstrumentsActivity instrumentsActivity);
+	void inject (MainActivity mainActivity);
 
 	void inject (InstrumentProvider instrumentProvider);
 
+	void inject (InstrumentsFragment instrumentsFragment);
+
+	void inject (LoginActivity loginActivity);
 }

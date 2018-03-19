@@ -1,13 +1,17 @@
-package com.example.teodordimitrov.sampleapplication.activities;
+package com.example.teodordimitrov.sampleapplication.fragments;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,7 +20,9 @@ import com.example.teodordimitrov.sampleapplication.adapters.InstrumentsPickerAd
 import com.example.teodordimitrov.sampleapplication.adapters.InstrumentsUserAdapter;
 import com.example.teodordimitrov.sampleapplication.application.BaseApplication;
 import com.example.teodordimitrov.sampleapplication.beans.Instrument;
+import com.example.teodordimitrov.sampleapplication.callbacks.OnBackPressedListener;
 import com.example.teodordimitrov.sampleapplication.callbacks.OnInstrumentsRemovedListener;
+import com.example.teodordimitrov.sampleapplication.constants.Constants;
 import com.example.teodordimitrov.sampleapplication.providers.InstrumentProvider;
 import com.example.teodordimitrov.sampleapplication.util.AnimationUtils;
 import com.example.teodordimitrov.sampleapplication.util.StringUtils;
@@ -30,15 +36,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Instruments activity.
- * Main activity showing the user his instruments and
- * giving him an option to add new ones.
+ * Instruments fragment which represents the users' instruments
+ * and all other available.
  *
- * @author teodor.dimitrov
+ * @author teodor.dimitrov on 19.3.2018 г..
  */
-public class InstrumentsActivity extends Activity implements InstrumentProvider.OnInstrumentsUpdatedListenerListener, OnInstrumentsRemovedListener {
 
-	public static final String EXTRA_HAS_LOGGED_OUT = "logout";
+public class InstrumentsFragment extends Fragment implements InstrumentProvider.OnInstrumentsUpdatedListenerListener, OnInstrumentsRemovedListener {
+
 	private static final Integer HANDLER_MSG_CODE_UPDATE_INSTRUMENTS = 1;
 	private static final Integer HANDLER_INSTRUMENTS_REFRESH_RATE = 3250;
 
@@ -50,21 +55,21 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 	 */
 	private static class WeakReferenceHandler extends Handler {
 
-		private final WeakReference<InstrumentsActivity> instrumentsActivityWeakReference;
+		private final WeakReference<InstrumentsFragment> instrumentsFragmentWeakReference;
 
-		private WeakReferenceHandler (InstrumentsActivity activityReference) {
-			instrumentsActivityWeakReference = new WeakReference<>(activityReference);
+		private WeakReferenceHandler (InstrumentsFragment fragmentReference) {
+			instrumentsFragmentWeakReference = new WeakReference<>(fragmentReference);
 		}
 
 		@Override
 		public void handleMessage (Message msg) {
-			InstrumentsActivity instrumentsActivity = instrumentsActivityWeakReference.get();
-			if (instrumentsActivity != null) {
+			InstrumentsFragment fragmentReference = instrumentsFragmentWeakReference.get();
+			if (fragmentReference != null) {
 				if (msg.what == HANDLER_MSG_CODE_UPDATE_INSTRUMENTS) {
-					if (instrumentsActivity.areUserInstrumentsPresented) {
-						instrumentsActivity.updateInstrumentPrices();
+					if (fragmentReference.areUserInstrumentsPresented) {
+						fragmentReference.updateInstrumentPrices();
 					} else {
-						instrumentsActivity.instrumentsProvider.getAllInstruments();
+						fragmentReference.instrumentsProvider.getAllInstruments();
 					}
 					sendEmptyMessageDelayed(HANDLER_MSG_CODE_UPDATE_INSTRUMENTS, HANDLER_INSTRUMENTS_REFRESH_RATE);
 				}
@@ -92,19 +97,28 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 	private InstrumentsUserAdapter instrumentsUserAdapter;
 	private WeakReferenceHandler handler;
 	private List<Instrument> userInstrumentsList;
+	private OnBackPressedListener onBackPressedListener;
 
 	private boolean areUserInstrumentsPresented;
 
+	@Nullable
 	@Override
-	protected void onCreate (Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_instruments);
-		baseActivitySetup();
-		showFabButton();
+	public View onCreateView (LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+		final View rootView = inflater.inflate(R.layout.fragment_instruments, container, false);
+		ButterKnife.bind(this, rootView);
+		return rootView;
 	}
 
 	@Override
-	protected void onStop () {
+	public void onViewCreated (View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		baseFragmentSetup();
+		showFabButton();
+		areUserInstrumentsPresented = true;
+	}
+
+	@Override
+	public void onStop () {
 		super.onStop();
 		handler.removeCallbacksAndMessages(null);
 		instrumentsProvider.cancelPriceUpdate();
@@ -133,13 +147,29 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 		setPickerAdapter(instrumentsList);
 	}
 
+	/**
+	 * If the fab button is visible the user can leave on back button.
+	 * The same is the case where he is on the main screen.
+	 *
+	 * @return
+	 */
+	public boolean getShouldExitOnBack () {
+		return areUserInstrumentsPresented;
+	}
+
+	public static InstrumentsFragment newInstance () {
+		return new InstrumentsFragment();
+	}
+
 	@Override
-	public void onBackPressed () {
-		if (!areUserInstrumentsPresented) {
-			onBack();
-		} else {
-			super.onBackPressed();
+	public void onAttach (Context context) {
+		super.onAttach(context);
+		try {
+			onBackPressedListener = (OnBackPressedListener) context;
+		} catch (ClassCastException e) {
+			Log.e(Constants.TAG, "The class must implement OnBackPressedListener", e);
 		}
+
 	}
 
 	@OnClick (R.id.instruments_add_instrument_fab_button)
@@ -184,16 +214,8 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 		if (!areUserInstrumentsPresented) {
 			onBack();
 		} else {
-			logout();
+			onBackPressedListener.onBack(true);
 		}
-	}
-
-	public void logout () {
-		Intent intent = new Intent(this, LoginActivity.class);
-		intent.putExtra(EXTRA_HAS_LOGGED_OUT, true);
-		startActivity(intent);
-		overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-		finish();
 	}
 
 	public List<Long> getInstrumentsIds () {
@@ -204,7 +226,7 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 		return instrumentsIds;
 	}
 
-	private void onBack () {
+	public void onBack () {
 		signOutTextView.setText(R.string.sign_out);
 		instrumentsPickerAdapter.setUpdateOnlyInstruments(false);
 		if (userInstrumentsList.isEmpty()) {
@@ -214,23 +236,9 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 		}
 	}
 
-	private void onBack (boolean shouldLogout) {
-		if (!areUserInstrumentsPresented) {
-			signOutTextView.setText(R.string.sign_out);
-			instrumentsPickerAdapter.setUpdateOnlyInstruments(false);
-			if (userInstrumentsList.isEmpty()) {
-				showFabButton();
-			} else {
-				showUserInstruments();
-			}
-		} else if (shouldLogout) {
-			logout();
-		}
-	}
-
-	private void baseActivitySetup () {
+	private void baseFragmentSetup () {
+		areUserInstrumentsPresented = true;
 		BaseApplication.getBaseComponent().inject(this);
-		ButterKnife.bind(this);
 		userInstrumentsList = new ArrayList<>();
 		instrumentsProvider = new InstrumentProvider(this);
 		initRecyclerView();
@@ -286,12 +294,11 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 
 	private void initRecyclerView () {
 		initAdapters();
-		instrumentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+		instrumentsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 		instrumentsRecyclerView.setAdapter(instrumentsUserAdapter);
 	}
 
 	private void initAdapters () {
-		areUserInstrumentsPresented = true;
 		instrumentsPickerAdapter = new InstrumentsPickerAdapter(new ArrayList<>());
 		instrumentsUserAdapter = new InstrumentsUserAdapter(this, userInstrumentsList);
 	}
@@ -305,5 +312,4 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 		handler = new WeakReferenceHandler(this);
 		handler.sendEmptyMessage(HANDLER_MSG_CODE_UPDATE_INSTRUMENTS);
 	}
-
 }

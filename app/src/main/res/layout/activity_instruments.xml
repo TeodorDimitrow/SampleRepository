@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_dark"
-    tools:context="com.example.teodordimitrov.sampleapplication.activities.InstrumentsActivity">
+    tools:context="com.example.teodordimitrov.sampleapplication.activities.MainActivity">
 
     <View
         style="@style/HorizontalLineSeparator"
@@ -57,113 +56,12 @@
         android:layout_below="@id/instruments_top_toolbar_layout"
         android:layout_marginBottom="5dp" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/instruments_recycler_view"
+    <FrameLayout
+        android:id="@+id/instruments_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/top_of_bottom_toolbar_layout"
-        android:layout_below="@+id/bottom_of_top_toolbar_layout"
-        android:visibility="gone" />
+        android:layout_below="@id/bottom_of_top_toolbar_layout">
 
-    <LinearLayout
-        android:id="@+id/instruments_fab_button_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/instruments_screen_bottom_line"
-        android:layout_below="@+id/instruments_top_toolbar_layout"
-        android:orientation="vertical"
-        android:weightSum="4">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/instruments_add_instrument_fab_button"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:layout_below="@+id/no_instruments"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_plus_black"
-            app:backgroundTint="@color/white_shade"
-            app:fabSize="auto"
-            app:rippleColor="@color/white_shade" />
-
-    </LinearLayout>
-
-
-    <View
-        android:id="@+id/top_of_bottom_toolbar_layout"
-        style="@style/HorizontalLineSeparator"
-        android:layout_above="@+id/instruments_bottom_toolbar_layout" />
-    <!--The styles of the views are needed for the particular UI placements.-->
-    <LinearLayout
-        android:id="@+id/instruments_bottom_toolbar_layout"
-        style="?android:attr/buttonBarButtonStyle"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/dark"
-        android:gravity="right"
-        android:padding="2dp"
-        android:weightSum="5">
-
-        <ImageButton
-            android:id="@+id/instruments_back_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="#0000"
-            android:clickable="false"
-            android:padding="5dp"
-            android:src="@drawable/ic_sign_out" />
-
-        <TextView
-            android:id="@+id/instruments_sign_out_text"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center|left"
-            android:text="@string/sign_out"
-            android:textColor="@color/white_shade"
-            android:textSize="@dimen/medium_text" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3" />
-
-        <TextView
-            android:id="@+id/instruments_add_rearrange_text"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="#0000"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="right|center"
-            android:text="@string/instruments_add"
-            android:textColor="@color/white_shade"
-            android:textSize="@dimen/medium_text" />
-
-        <ImageButton
-            android:id="@+id/instruments_add_instrument_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="#0000"
-            android:clickable="false"
-            android:padding="5dp"
-            android:src="@drawable/ic_action_name" />
-
-    </LinearLayout>
-
-    <View
-        android:id="@+id/instruments_screen_bottom_line"
-        style="@style/HorizontalLineSeparator"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="1dp" />
+    </FrameLayout>
 
 </RelativeLayout>
