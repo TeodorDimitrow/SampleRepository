@@ -17,8 +17,8 @@
         android:id="@+id/instruments_fab_button_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/instruments_screen_bottom_line"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:orientation="vertical"
         android:weightSum="4">
 
@@ -93,6 +93,7 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="right|center"
+            android:lines="1"
             android:text="@string/instruments_add"
             android:textColor="@color/white_shade"
             android:textSize="@dimen/medium_text" />
@@ -105,7 +106,7 @@
             android:background="#0000"
             android:clickable="false"
             android:padding="5dp"
-            android:src="@drawable/ic_add_instruments" />
+            android:src="@drawable/ic_add" />
 
     </LinearLayout>
 
