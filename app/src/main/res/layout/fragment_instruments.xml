@@ -104,7 +104,7 @@
             android:background="#0000"
             android:clickable="false"
             android:padding="5dp"
-            android:src="@drawable/ic_action_name" />
+            android:src="@drawable/ic_add_instruments" />
 
     </LinearLayout>
 
