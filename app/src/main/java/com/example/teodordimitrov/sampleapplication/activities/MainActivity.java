@@ -23,6 +23,15 @@ public class MainActivity extends Activity implements OnBackPressedListener {
 	private InstrumentsFragment instrumentsFragment;
 
 	@Override
+	public void onBack (boolean shouldLogout) {
+		if (shouldLogout) {
+			logout();
+		} else {
+			finish();
+		}
+	}
+
+	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_instruments);
@@ -43,12 +52,4 @@ public class MainActivity extends Activity implements OnBackPressedListener {
 		finish();
 	}
 
-	@Override
-	public void onBack (boolean shouldLogout) {
-		if (shouldLogout) {
-			logout();
-		} else {
-			finish();
-		}
-	}
 }

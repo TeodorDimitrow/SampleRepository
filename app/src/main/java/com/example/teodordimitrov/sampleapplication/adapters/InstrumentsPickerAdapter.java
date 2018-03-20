@@ -30,17 +30,6 @@ import butterknife.OnCheckedChanged;
 
 public class InstrumentsPickerAdapter extends RecyclerView.Adapter<InstrumentsPickerAdapter.InstrumentPickerViewHolder> {
 
-	public List<Instrument> getSelectedInstruments () {
-		List<Instrument> instrumentsList = new ArrayList<>();
-		Map<Instrument, Boolean> instrumentsMap = checkedInstrumentsMap;
-		for (Map.Entry<Instrument, Boolean> checkedInstrumentEntry : instrumentsMap.entrySet()) {
-			if (checkedInstrumentEntry.getValue()) {
-				instrumentsList.add(checkedInstrumentEntry.getKey());
-			}
-		}
-		return instrumentsList;
-	}
-
 	private Map<Instrument, Boolean> checkedInstrumentsMap;
 	private List<Instrument> instrumentsList;
 	private boolean updateOnlyInstruments;
@@ -70,8 +59,15 @@ public class InstrumentsPickerAdapter extends RecyclerView.Adapter<InstrumentsPi
 		holder.addInstrumentCheckBox.setChecked(isInstrumentChecked);
 	}
 
-	public boolean getUpdateOnlyInstruments () {
-		return updateOnlyInstruments;
+	public List<Instrument> getSelectedInstruments () {
+		List<Instrument> instrumentsList = new ArrayList<>();
+		Map<Instrument, Boolean> instrumentsMap = checkedInstrumentsMap;
+		for (Map.Entry<Instrument, Boolean> checkedInstrumentEntry : instrumentsMap.entrySet()) {
+			if (checkedInstrumentEntry.getValue()) {
+				instrumentsList.add(checkedInstrumentEntry.getKey());
+			}
+		}
+		return instrumentsList;
 	}
 
 	public void setInstruments (List<Instrument> instrumentsList, List<Instrument> usersInstrumentsList) {
@@ -84,6 +80,10 @@ public class InstrumentsPickerAdapter extends RecyclerView.Adapter<InstrumentsPi
 	public void setInstruments (List<Instrument> instrumentsList) {
 		this.instrumentsList = instrumentsList;
 		notifyDataSetChanged();
+	}
+
+	public boolean getUpdateOnlyInstruments () {
+		return updateOnlyInstruments;
 	}
 
 	private void setHolderValues (InstrumentPickerViewHolder holder, Instrument instrument) {

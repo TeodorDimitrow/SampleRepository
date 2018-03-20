@@ -8,5 +8,7 @@ package com.example.teodordimitrov.sampleapplication.callbacks;
  */
 
 public interface OnBackPressedListener {
+
 	void onBack (boolean shouldLogout);
+
 }

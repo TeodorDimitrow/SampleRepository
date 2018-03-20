@@ -70,9 +70,8 @@ public class InstrumentProvider {
 	}
 
 	public void getAllInstruments () {
-		UpdateInstrumentsAsyncTask instrumentsAsyncTask = new UpdateInstrumentsAsyncTask(new ArrayList<>(), true);
+		instrumentsAsyncTask = new UpdateInstrumentsAsyncTask(new ArrayList<>(), true);
 		instrumentsAsyncTask.execute();
-		this.instrumentsAsyncTask = instrumentsAsyncTask;
 	}
 
 	public void cancelPriceUpdate () {

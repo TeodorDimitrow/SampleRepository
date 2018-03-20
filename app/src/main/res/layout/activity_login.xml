@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_gradient_background"
+    android:gravity="center"
     android:padding="@dimen/padding_login_screen_all"
     tools:context=".activities.LoginActivity">
 
@@ -13,96 +14,81 @@
         android:focusable="true"
         android:focusableInTouchMode="true" />
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="8">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="6.5"
+            android:gravity="top"
+            android:orientation="vertical"
             android:weightSum="8">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.75" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="6.5"
-                android:gravity="top"
-                android:orientation="vertical"
-                android:weightSum="8">
-
-                <!--TODO use another image asset.-->
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="5.25"
-                    android:background="@mipmap/main_logo"
-                    android:gravity="center"
-                    android:padding="@dimen/padding_login_screen_all" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <EditText
-                    android:id="@+id/login_edit_text_email"
-                    style="@style/UserCredentialsEditText"
-                    android:drawableLeft="@drawable/ic_email"
-                    android:hint="@string/user_email"
-                    android:inputType="textEmailAddress" />
-
-                <View
-                    android:id="@+id/login_email_underline"
-                    style="@style/HorizontalLineSeparator" />
-
-                <EditText
-                    android:id="@+id/login_edit_text_password"
-                    style="@style/UserCredentialsEditText"
-                    android:drawableLeft="@drawable/ic_lock"
-                    android:hint="@string/user_password"
-                    android:inputType="textPassword" />
-
-                <View
-                    android:id="@+id/login_password_underline"
-                    style="@style/HorizontalLineSeparator" />
-
-                <CheckBox
-                    android:id="@+id/login_check_box_remember_me"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_top_login_remember_me"
-                    android:button="@drawable/custom_checkbox"
-                    android:padding="@dimen/padding_login_screen_all"
-                    android:text="@string/login_remember"
-                    android:textColor="#fff" />
-
-                <Button
-                    android:id="@+id/login_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/margin_top_login_button"
-                    android:layout_weight="1"
-                    android:background="@drawable/login_button_background"
-                    android:padding="@dimen/padding_login_screen_all"
-                    android:text="@string/button_log_in"
-                    android:textSize="@dimen/text_size_login_button"
-                    android:typeface="serif" />
-            </LinearLayout>
+            <!--TODO use another image asset.-->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5.25"
+                android:background="@mipmap/main_logo"
+                android:gravity="center"
+                android:padding="@dimen/padding_login_screen_all" />
 
             <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.75" />
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <EditText
+                android:id="@+id/login_edit_text_email"
+                style="@style/UserCredentialsEditText"
+                android:drawableLeft="@drawable/ic_email"
+                android:hint="@string/user_email"
+                android:inputType="textEmailAddress" />
+
+            <View
+                android:id="@+id/login_email_underline"
+                style="@style/HorizontalLineSeparator" />
+
+            <EditText
+                android:id="@+id/login_edit_text_password"
+                style="@style/UserCredentialsEditText"
+                android:drawableLeft="@drawable/ic_lock"
+                android:hint="@string/user_password"
+                android:inputType="textPassword" />
+
+            <View
+                android:id="@+id/login_password_underline"
+                style="@style/HorizontalLineSeparator" />
+
+            <CheckBox
+                android:id="@+id/login_check_box_remember_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_top_login_remember_me"
+                android:button="@drawable/custom_checkbox"
+                android:padding="@dimen/padding_login_screen_all"
+                android:text="@string/login_remember"
+                android:textColor="#fff" />
+
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/margin_top_login_button"
+                android:layout_weight="1"
+                android:background="@drawable/login_button_background"
+                android:padding="@dimen/padding_login_screen_all"
+                android:text="@string/button_log_in"
+                android:textSize="@dimen/text_size_login_button"
+                android:typeface="serif" />
         </LinearLayout>
 
-    </ScrollView>
+
+    </LinearLayout>
+
 </LinearLayout>

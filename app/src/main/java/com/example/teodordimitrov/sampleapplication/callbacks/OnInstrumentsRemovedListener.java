@@ -10,5 +10,7 @@ import com.example.teodordimitrov.sampleapplication.beans.Instrument;
  */
 
 public interface OnInstrumentsRemovedListener {
+
 	void onInstrumentsRemoved (Instrument instrument);
+
 }

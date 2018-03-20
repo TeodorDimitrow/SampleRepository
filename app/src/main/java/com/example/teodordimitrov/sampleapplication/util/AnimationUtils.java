@@ -23,12 +23,4 @@ public class AnimationUtils {
 		recyclerView.scheduleLayoutAnimation();
 	}
 
-	public static void layoutGoUpAnimation (final RecyclerView recyclerView) {
-		final Context context = recyclerView.getContext();
-		final LayoutAnimationController controller =
-				android.view.animation.AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_go_up);
-
-		recyclerView.setLayoutAnimation(controller);
-		recyclerView.scheduleLayoutAnimation();
-	}
 }
