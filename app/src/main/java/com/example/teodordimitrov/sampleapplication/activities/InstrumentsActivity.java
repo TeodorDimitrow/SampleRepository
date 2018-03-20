@@ -111,6 +111,14 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 	}
 
 	@Override
+	protected void onStart () {
+		super.onStart();
+		if (!userInstrumentsList.isEmpty() || isPickerAdapterVisible()) {
+			handler.sendEmptyMessage(HANDLER_MSG_CODE_UPDATE_INSTRUMENTS);
+		}
+	}
+
+	@Override
 	public void onInstrumentsRemoved (Instrument instrument) {
 		userInstrumentsList.remove(instrument);
 		if (userInstrumentsList.isEmpty()) {
@@ -214,6 +222,10 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 		}
 	}
 
+	private boolean isPickerAdapterVisible () {
+		return instrumentsRecyclerView.getAdapter() instanceof InstrumentsPickerAdapter;
+	}
+
 	private void onBack (boolean shouldLogout) {
 		if (!areUserInstrumentsPresented) {
 			signOutTextView.setText(R.string.sign_out);
@@ -303,7 +315,6 @@ public class InstrumentsActivity extends Activity implements InstrumentProvider.
 
 	private void initHandler () {
 		handler = new WeakReferenceHandler(this);
-		handler.sendEmptyMessage(HANDLER_MSG_CODE_UPDATE_INSTRUMENTS);
 	}
 
 }

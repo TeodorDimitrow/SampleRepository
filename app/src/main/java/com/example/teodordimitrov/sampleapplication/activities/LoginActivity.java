@@ -1,6 +1,5 @@
 package com.example.teodordimitrov.sampleapplication.activities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -100,7 +99,6 @@ public class LoginActivity extends Activity {
 		finish();
 	}
 
-	@SuppressLint ("ClickableViewAccessibility")
 	private void setListeners () {
 		emailEditText.addTextChangedListener(emailTextChangeListener);
 		emailEditText.setOnTouchListener(emailTouchListener);
@@ -125,15 +123,17 @@ public class LoginActivity extends Activity {
 
 	private boolean areCredentialsValid (String email, String password) {
 		if (!ValidationUtils.isEmailValid(email)) {
-			emailEditText.requestFocus();
 			Toast.makeText(this, getString(R.string.error_invalid_email), Toast.LENGTH_SHORT).show();
+			emailEditText.requestFocus();
 			emailUnderlineView.setBackgroundColor(Color.RED);
 			isEmailUnderlineRed = true;
 			return false;
 		}
 		if (!ValidationUtils.isPasswordValid(password)) {
 			Toast.makeText(this, getString(R.string.error_invalid_password), Toast.LENGTH_SHORT).show();
+			passwordEditText.requestFocus();
 			passwordUnderlineView.setBackgroundColor(Color.RED);
+			isPasswordUnderlineRed = true;
 			return false;
 		}
 
@@ -211,9 +211,9 @@ public class LoginActivity extends Activity {
 						return false;
 					}
 				}
-			} else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				emailEditText.performClick();
 			}
+			emailEditText.performClick();
+
 			return false;
 		}
 	};
@@ -239,11 +239,12 @@ public class LoginActivity extends Activity {
 							passwordEditText.setTransformationMethod(null);
 							isPasswordVisible = true;
 						}
-
+						passwordEditText.performClick();
 						return false;
 					}
 				}
 			}
+			passwordEditText.performClick();
 			return false;
 		}
 	};

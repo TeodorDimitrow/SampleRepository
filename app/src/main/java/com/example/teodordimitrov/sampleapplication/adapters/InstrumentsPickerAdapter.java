@@ -30,17 +30,6 @@ import butterknife.OnCheckedChanged;
 
 public class InstrumentsPickerAdapter extends RecyclerView.Adapter<InstrumentsPickerAdapter.InstrumentPickerViewHolder> {
 
-	public List<Instrument> getSelectedInstruments () {
-		List<Instrument> instrumentsList = new ArrayList<>();
-		Map<Instrument, Boolean> instrumentsMap = checkedInstrumentsMap;
-		for (Map.Entry<Instrument, Boolean> checkedInstrumentEntry : instrumentsMap.entrySet()) {
-			if (checkedInstrumentEntry.getValue()) {
-				instrumentsList.add(checkedInstrumentEntry.getKey());
-			}
-		}
-		return instrumentsList;
-	}
-
 	private Map<Instrument, Boolean> checkedInstrumentsMap;
 	private List<Instrument> instrumentsList;
 	private boolean updateOnlyInstruments;
@@ -70,8 +59,35 @@ public class InstrumentsPickerAdapter extends RecyclerView.Adapter<InstrumentsPi
 		holder.addInstrumentCheckBox.setChecked(isInstrumentChecked);
 	}
 
+	@Override
+	public int getItemCount () {
+		return instrumentsList.size();
+	}
+
 	public boolean getUpdateOnlyInstruments () {
 		return updateOnlyInstruments;
+	}
+
+	public void setUpdateOnlyInstruments (boolean updateOnlyInstruments) {
+		this.updateOnlyInstruments = updateOnlyInstruments;
+	}
+
+	public void clearChecked () {
+		for (Map.Entry<Instrument, Boolean> entry : checkedInstrumentsMap.entrySet()) {
+			checkedInstrumentsMap.put(entry.getKey(), false);
+		}
+		notifyDataSetChanged();
+	}
+
+	public List<Instrument> getSelectedInstruments () {
+		List<Instrument> instrumentsList = new ArrayList<>();
+		Map<Instrument, Boolean> instrumentsMap = checkedInstrumentsMap;
+		for (Map.Entry<Instrument, Boolean> checkedInstrumentEntry : instrumentsMap.entrySet()) {
+			if (checkedInstrumentEntry.getValue()) {
+				instrumentsList.add(checkedInstrumentEntry.getKey());
+			}
+		}
+		return instrumentsList;
 	}
 
 	public void setInstruments (List<Instrument> instrumentsList, List<Instrument> usersInstrumentsList) {
@@ -91,27 +107,11 @@ public class InstrumentsPickerAdapter extends RecyclerView.Adapter<InstrumentsPi
 		holder.instrumentPriceTextView.setText(String.valueOf(instrument.getCurrentPrice()));
 	}
 
-	@Override
-	public int getItemCount () {
-		return instrumentsList.size();
-	}
-
 	private void setInstrumentsMap (List<Instrument> usersInstrumentsList) {
 		for (Instrument instrument : instrumentsList) {
 			boolean doesUserHaveInstrument = usersInstrumentsList.contains(instrument);
 			checkedInstrumentsMap.put(instrument, doesUserHaveInstrument);
 		}
-	}
-
-	public void setUpdateOnlyInstruments (boolean updateOnlyInstruments) {
-		this.updateOnlyInstruments = updateOnlyInstruments;
-	}
-
-	public void clearChecked () {
-		for (Map.Entry<Instrument, Boolean> entry : checkedInstrumentsMap.entrySet()) {
-			checkedInstrumentsMap.put(entry.getKey(), false);
-		}
-		notifyDataSetChanged();
 	}
 
 	class InstrumentPickerViewHolder extends RecyclerView.ViewHolder {

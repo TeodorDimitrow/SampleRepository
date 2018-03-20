@@ -71,13 +71,10 @@
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_below="@+id/instruments_top_toolbar_layout"
+        android:gravity="center"
         android:orientation="vertical"
-        android:weightSum="4">
+        android:weightSum="2">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/instruments_add_instrument_fab_button"
@@ -125,8 +122,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:lines="1"
             android:gravity="center|left"
+            android:lines="1"
             android:text="@string/sign_out"
             android:textColor="@color/white_shade"
             android:textSize="@dimen/small_text" />

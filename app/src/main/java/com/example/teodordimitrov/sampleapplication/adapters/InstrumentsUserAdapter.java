@@ -68,6 +68,11 @@ public class InstrumentsUserAdapter extends RecyclerView.Adapter<InstrumentsUser
 		return position;
 	}
 
+	@Override
+	public int getItemCount () {
+		return instrumentsList.size();
+	}
+
 	public void setInstruments (List<Instrument> usersInstrumentsList) {
 		this.instrumentsList = usersInstrumentsList;
 		notifyDataSetChanged();
@@ -93,11 +98,6 @@ public class InstrumentsUserAdapter extends RecyclerView.Adapter<InstrumentsUser
 		}
 		holder.instrumentNameTextView.setText(instrument.getInstrumentName());
 		holder.instrumentPriceTextView.setText(String.valueOf(instrument.getCurrentPrice()));
-	}
-
-	@Override
-	public int getItemCount () {
-		return instrumentsList.size();
 	}
 
 	class InstrumentUserViewHolder extends RecyclerView.ViewHolder {

@@ -25,6 +25,9 @@ import javax.inject.Inject;
 /**
  * Prices provider class.
  * Will represent the actual data receiving.
+ * The class reads from a file every time it needs to provide
+ * the instruments data. The logic is made on purpose. To
+ * simulate an networking operation.
  *
  * @author teodor.dimitrov on 18.3.2018 г..
  */
@@ -36,7 +39,7 @@ public class InstrumentProvider {
 	private static final String INSTRUMENT_HIGHEST_PRICE = "highestPrice";
 	private static final String INSTRUMENTS_LIST = "instrumentsList";
 
-	//TODO must be in package interfaces.
+	//TODO must be in package callbacks.
 	public interface OnInstrumentsUpdatedListenerListener {
 		void onUserInstrumentsUpdated (List<Instrument> instrumentsList);
 
@@ -70,9 +73,8 @@ public class InstrumentProvider {
 	}
 
 	public void getAllInstruments () {
-		UpdateInstrumentsAsyncTask instrumentsAsyncTask = new UpdateInstrumentsAsyncTask(new ArrayList<>(), true);
+		instrumentsAsyncTask = new UpdateInstrumentsAsyncTask(new ArrayList<>(), true);
 		instrumentsAsyncTask.execute();
-		this.instrumentsAsyncTask = instrumentsAsyncTask;
 	}
 
 	public void cancelPriceUpdate () {
@@ -123,7 +125,6 @@ public class InstrumentProvider {
 	 * @throws JSONException
 	 */
 	private void updateInstrumentData (JSONArray updatedInstrumentsJsonArray, JSONObject instrumentJson) throws JSONException {
-
 		float lowestPrice = (float) instrumentJson.getDouble(INSTRUMENT_LOWEST_PRICE);
 		float highestPrice = (float) instrumentJson.getDouble(INSTRUMENT_HIGHEST_PRICE);
 		instrumentJson.remove(INSTRUMENT_LOWEST_PRICE);
