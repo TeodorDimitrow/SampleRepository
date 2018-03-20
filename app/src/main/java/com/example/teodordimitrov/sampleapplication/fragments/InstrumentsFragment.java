@@ -101,6 +101,17 @@ public class InstrumentsFragment extends Fragment implements InstrumentProvider.
 
 	private boolean areUserInstrumentsPresented;
 
+	@Override
+	public void onAttach (Context context) {
+		super.onAttach(context);
+		try {
+			onBackPressedListener = (OnBackPressedListener) context;
+		} catch (ClassCastException e) {
+			Log.e(Constants.TAG, "The class must implement OnBackPressedListener", e);
+		}
+
+	}
+
 	@Nullable
 	@Override
 	public View onCreateView (LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -115,6 +126,14 @@ public class InstrumentsFragment extends Fragment implements InstrumentProvider.
 		baseFragmentSetup();
 		showFabButton();
 		areUserInstrumentsPresented = true;
+	}
+
+	@Override
+	public void onStart () {
+		super.onStart();
+		if (!userInstrumentsList.isEmpty() || isPickerAdapterVisible()) {
+			handler.sendEmptyMessage(HANDLER_MSG_CODE_UPDATE_INSTRUMENTS);
+		}
 	}
 
 	@Override
@@ -145,31 +164,6 @@ public class InstrumentsFragment extends Fragment implements InstrumentProvider.
 			hideFabButton();
 		}
 		setPickerAdapter(instrumentsList);
-	}
-
-	/**
-	 * If the fab button is visible the user can leave on back button.
-	 * The same is the case where he is on the main screen.
-	 *
-	 * @return
-	 */
-	public boolean getShouldExitOnBack () {
-		return areUserInstrumentsPresented;
-	}
-
-	public static InstrumentsFragment newInstance () {
-		return new InstrumentsFragment();
-	}
-
-	@Override
-	public void onAttach (Context context) {
-		super.onAttach(context);
-		try {
-			onBackPressedListener = (OnBackPressedListener) context;
-		} catch (ClassCastException e) {
-			Log.e(Constants.TAG, "The class must implement OnBackPressedListener", e);
-		}
-
 	}
 
 	@OnClick (R.id.instruments_add_instrument_fab_button)
@@ -216,6 +210,20 @@ public class InstrumentsFragment extends Fragment implements InstrumentProvider.
 		} else {
 			onBackPressedListener.onBack(true);
 		}
+	}
+
+	/**
+	 * If the fab button is visible the user can leave on back button.
+	 * The same is the case where he is on the main screen.
+	 *
+	 * @return
+	 */
+	public boolean getShouldExitOnBack () {
+		return areUserInstrumentsPresented;
+	}
+
+	public static InstrumentsFragment newInstance () {
+		return new InstrumentsFragment();
 	}
 
 	public List<Long> getInstrumentsIds () {
@@ -311,5 +319,9 @@ public class InstrumentsFragment extends Fragment implements InstrumentProvider.
 	private void initHandler () {
 		handler = new WeakReferenceHandler(this);
 		handler.sendEmptyMessage(HANDLER_MSG_CODE_UPDATE_INSTRUMENTS);
+	}
+
+	private boolean isPickerAdapterVisible () {
+		return instrumentsRecyclerView.getAdapter() instanceof InstrumentsPickerAdapter;
 	}
 }
